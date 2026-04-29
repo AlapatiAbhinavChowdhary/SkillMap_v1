@@ -4,33 +4,13 @@ export default {
   theme: {
     extend: {
       colors: {
-        ink: {
-          950: '#030712',
-          900: '#0f172a',
-          800: '#1e293b',
-          700: '#334155',
+        cream: { 50: '#FAF7F2', 100: '#F5F0E8', 200: '#EDE5D8' },
+        orange: {
+          50: '#FEF2EB', 100: '#FADBC6', 200: '#F5A67A',
+          300: '#F28C5E', 400: '#F06828', 500: '#E8470A',
+          600: '#C23B08', 700: '#9A3412', 800: '#7C2D12', 900: '#431407',
         },
-        electric: {
-          300: '#7dd3fc',
-          400: '#38bdf8',
-          500: '#0ea5e9',
-          600: '#0284c7',
-        },
-      },
-      boxShadow: {
-        glow: '0 0 0 1px rgba(56, 189, 248, 0.12), 0 24px 80px rgba(2, 8, 23, 0.55)',
-      },
-      backgroundImage: {
-        'radial-soft': 'radial-gradient(circle at top left, rgba(56,189,248,0.14), transparent 36%), radial-gradient(circle at top right, rgba(148,163,184,0.08), transparent 28%)',
-      },
-      keyframes: {
-        floaty: {
-          '0%, 100%': { transform: 'translateY(0px)' },
-          '50%': { transform: 'translateY(-10px)' },
-        },
-      },
-      animation: {
-        floaty: 'floaty 7s ease-in-out infinite',
+        brand: { primary: '#E8470A', light: '#F28C5E', dark: '#C23B08' },
       },
     },
   },

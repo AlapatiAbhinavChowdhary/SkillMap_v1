@@ -1,151 +1,114 @@
-# SkillMap
+# SkillMap: AI-Powered Talent Intelligence
 
 <div align="center">
 
-**AI-powered resume intelligence for clustering candidates by real skill signals, not keyword noise.**
+**Bridging the gap between raw resumes and role readiness using Local Machine Learning and Google Gemini AI.**
 
 [![React](https://img.shields.io/badge/Frontend-React%2018-61DAFB?style=for-the-badge&logo=react&logoColor=06111f)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Build-Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
 [![Flask](https://img.shields.io/badge/Backend-Flask-FFFFFF?style=for-the-badge&logo=flask&logoColor=000000)](https://flask.palletsprojects.com/)
 [![Python](https://img.shields.io/badge/Model%20Layer-Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![Gemini](https://img.shields.io/badge/AI%20Layer-Google%20Gemini-4285F4?style=for-the-badge&logo=googlegemini&logoColor=white)](https://ai.google.dev/)
 
 </div>
 
-SkillMap turns a resume folder into a searchable talent map. The backend extracts and clusters resume embeddings, the frontend presents the results in a clean product dashboard, and the platform gives recruiters a fast way to review candidates by skill profile instead of manually scanning every document.
+---
 
-## Visual Overview
+## 🌟 What is SkillMap?
 
-```mermaid
-flowchart LR
-    A[Resume PDF / DOCX / Text] --> B[Flask API]
-    B --> C[Text cleanup + skill extraction]
-    C --> D[SentenceTransformer embeddings]
-    D --> E[UMAP dimensionality reduction]
-    E --> F[KMeans clustering]
-    F --> G[Cluster labels + confidence + analytics]
-    G --> H[React dashboard]
-    H --> I[Analyze · Bulk Upload · Insights]
-```
+SkillMap is a full-stack talent intelligence platform designed to help recruiters and hiring managers move past keyword matching. It uses **unsupervised machine learning** to cluster thousands of resumes into distinct skill profiles and **Generative AI (Gemini)** to provide deep, actionable insights into a candidate's readiness for specific roles.
 
-## What SkillMap Does
+Instead of scanning resumes one by one, SkillMap gives you a "bird's-eye view" of your entire candidate pool.
 
-- Groups resumes into skill-based clusters using pretrained ML artifacts.
-- Predicts the best-fit cluster for a single resume with confidence scoring.
-- Supports bulk screening for screening workflows and CSV export.
-- Surfaces cluster summaries, skill distributions, and resume analytics.
-- Accepts pasted text or uploaded PDF and DOCX resumes.
+---
 
-## Screens In The App
+## 🚀 Key Features
 
-- Dashboard: high-level metrics, cluster cards, and top skills.
-- Analyze: single-resume analysis with direct upload support.
-- Bulk Upload: batch screening and exportable results.
-- Insights: cluster and skill charts for quick review.
+### 1. Intelligent Clustering (Local ML)
+- **Automatic Grouping**: Resumes are vectorized using `SentenceTransformers` and grouped into 12 distinct clusters (e.g., Information Technology, Finance, Healthcare) using `K-Means`.
+- **Dimensionality Reduction**: Uses `UMAP` to map complex skill relationships into a searchable talent map.
+- **Data Insights**: Visualize skill density and cluster distributions across your entire database.
 
-## Tech Stack
+### 2. Role Readiness (Powered by Gemini AI)
+- **Deep ATS Analysis**: Upload a resume (PDF or Text) and get a comprehensive ATS score.
+- **Skill Gap Analysis**: Automatically identifies which skills are present, which are missing, and which are "extra strengths."
+- **Bullet Point Rewriter**: Uses AI to identify weak resume bullet points and suggests high-impact alternatives.
+- **JD Matching**: Paste a Job Description to get a role-specific match score and "readiness" label.
 
-### Backend
-- Flask
-- SentenceTransformers
-- UMAP
-- KMeans
-- pandas, numpy, scikit-learn
-- python-docx / PDF text parsing dependencies
+### 3. Bulk Resume Screening
+- **Batch Processing**: Upload multiple resumes at once to see their predicted clusters and scores in a single table.
+- **Exportable Data**: Export screening results to CSV for use in other HR tools.
+
+---
+
+## 🛠️ The Tech Stack
 
 ### Frontend
-- React 18
-- Vite
-- Framer Motion
-- Recharts
-- Lucide React
-- pdfjs-dist
-- mammoth
+- **React 18 & Vite**: For a blazing fast, modern developer experience.
+- **Framer Motion**: For smooth, premium UI transitions and sequential animations.
+- **Recharts**: For interactive data visualizations (Radial charts, Radar maps, etc.).
+- **Lucide React**: For a clean, consistent iconography system.
 
-### Data And Models
-- `Resume.csv`
-- `models/bert_model_name.pkl`
-- `models/umap_reducer.pkl`
-- `models/kmeans_model.pkl`
-- `models/cluster_names.pkl`
-- `models/cluster_results.csv`
+### Backend
+- **Flask**: A lightweight Python API serving both local ML predictions and project statistics.
+- **ML Pipeline**: `SentenceTransformers` (Embeddings), `UMAP` (Reduction), and `scikit-learn` (Clustering).
+- **Parsers**: `pdfjs-dist` and `mammoth` for client-side document processing.
 
-## Project Structure
+### AI Layer
+- **Google Gemini 1.5 Flash**: Orchestrates the complex Role Readiness analysis, providing expert-level feedback on resume quality and formatting.
+
+---
+
+## 🗺️ Project Structure
 
 ```text
 SkillMap/
-├── backend/
-│   ├── app.py
-│   └── requirements.txt
-├── frontend/
+├── backend/                # Flask API & ML Logic
+│   ├── app.py              # Main API server
+│   └── requirements.txt    # Python dependencies
+├── frontend/               # React Application
 │   ├── src/
-│   ├── index.html
-│   └── package.json
-├── models/
-├── Resume.csv
-└── README.md
+│   │   ├── components/     # Reusable UI elements
+│   │   ├── pages/          # Dashboard, Analyze, Role Readiness, etc.
+│   │   ├── utils/          # API services (Gemini, Backend)
+│   │   └── constants/      # API Keys & Configuration
+│   └── tailwind.config.js  # Design system configuration
+├── models/                 # Pre-trained ML artifacts (.pkl)
+├── Resume.csv              # Source data for clustering
+└── README.md               # You are here!
 ```
 
-## Local Setup
+---
 
-### 1. Backend
+## ⚡ Quick Start
 
-Create a virtual environment and install dependencies:
-
+### 1. Set up the Backend
 ```bash
+cd backend
 python -m venv .venv
-.venv\Scripts\activate
-pip install -r backend/requirements.txt
+.venv\Scripts\activate      # Windows
+# source .venv/bin/activate # Mac/Linux
+pip install -r requirements.txt
+python app.py
 ```
+*API will run at `http://localhost:5000`*
 
-Run the API:
-
-```bash
-python backend/app.py
-```
-
-The API runs on `http://localhost:5000` by default.
-
-### 2. Frontend
-
-Install dependencies and start the Vite dev server:
-
+### 2. Set up the Frontend
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
+*App will run at `http://localhost:5173`*
 
-The app runs on `http://localhost:5173` by default.
+### 3. Configure AI (Role Readiness)
+Open `frontend/src/constants/apiKeys.js` and add your Google Gemini API Key:
+```javascript
+export const GEMINI_API_KEY = "YOUR_KEY_HERE";
+```
 
-### 3. Environment Variables
+---
 
-Copy `.env.example` to `.env` and adjust values as needed.
+## 💡 Why SkillMap?
 
-## API Reference
-
-| Method | Route | Purpose |
-| --- | --- | --- |
-| POST | `/predict` | Predict the best cluster for one resume |
-| GET | `/clusters` | Return all clusters and summary metadata |
-| POST | `/bulk-predict` | Predict clusters for multiple resumes |
-| GET | `/stats` | Return analytics, totals, and top skills |
-| GET | `/clusters/<id>/resumes` | Return resumes inside a specific cluster |
-| GET | `/health` | Health check |
-
-## Example Workflow
-
-1. Upload or paste a resume.
-2. The backend cleans the text and extracts skill signals.
-3. The model predicts the closest cluster and confidence.
-4. The dashboard surfaces the cluster, top skills, and related analytics.
-
-## Notes
-
-- The backend loads the saved model artifacts on startup.
-- The frontend expects the API base URL in `VITE_API_URL` when deployed.
-- If you deploy the frontend separately, run the Flask app behind a production WSGI server such as Waitress or Gunicorn.
-- The repo is designed to work on Windows and local development environments.
-
-## Why This Project Exists
-
-Recruiting workflows often fail because they treat resumes as unstructured text blobs. SkillMap turns the workflow into a structured talent map so teams can review candidates by cluster, skill density, and similarity instead of reading every resume manually.
+Traditional Applicant Tracking Systems (ATS) often fail because they treat resumes as unstructured text blobs. SkillMap turns the recruiting workflow into a structured **talent map**, allowing teams to review candidates by skill density and similarity rather than manual scanning. It bridges the gap between "Keyword Matching" and "Skill Intelligence."
