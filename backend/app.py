@@ -13,6 +13,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 from sentence_transformers import SentenceTransformer
 from sklearn.preprocessing import normalize as l2_normalize
+from threading import Lock
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 MODEL_DIR = Path(os.getenv("MODEL_DIR", BASE_DIR / "models"))
@@ -224,7 +225,8 @@ umap_reducer = load_pickle(MODEL_DIR / "umap_reducer.pkl")
 kmeans_model = load_pickle(MODEL_DIR / "kmeans_model.pkl")
 cluster_name_source = load_pickle(MODEL_DIR / "cluster_names.pkl")
 
-sentence_model = SentenceTransformer(str(bert_model_name))
+sentence_model: SentenceTransformer | None = None
+sentence_model_lock = Lock()
 
 resume_df = read_dataframe(RESUME_CSV).copy()
 cluster_df = read_dataframe(CLUSTER_RESULTS_CSV).copy()
@@ -277,12 +279,22 @@ for record in cluster_distribution:
 cluster_ids = sorted(cluster_lookup.keys())
 
 
+def get_sentence_model() -> SentenceTransformer:
+    global sentence_model
+
+    if sentence_model is None:
+        with sentence_model_lock:
+            if sentence_model is None:
+                sentence_model = SentenceTransformer(str(bert_model_name))
+    return sentence_model
+
+
 def build_cluster_features(text: str) -> tuple[int, str, float, list[str], list[float]]:
     cleaned = clean_text(text)
     if not cleaned:
         raise ValueError("resume_text cannot be empty")
 
-    embedding = sentence_model.encode([cleaned], convert_to_numpy=True, show_progress_bar=False)
+    embedding = get_sentence_model().encode([cleaned], convert_to_numpy=True, show_progress_bar=False)
     embedding = l2_normalize(embedding)
     reduced = umap_reducer.transform(embedding)
     reduced = l2_normalize(reduced)
