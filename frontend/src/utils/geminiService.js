@@ -1,4 +1,4 @@
-import { GEMINI_API_KEY, GEMINI_API_URL } from '../constants/apiKeys';
+import { API_BASE } from '../utils';
 
 const SYSTEM_PROMPT = `You are an expert ATS resume analyst. Analyze the resume above 
 and return ONLY a valid JSON object with no markdown, no backticks, 
@@ -79,7 +79,7 @@ export async function analyzeResume(resumeData, inputType, targetJD = '') {
       throw new Error("Invalid input data provided.");
     }
 
-    const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
+    const response = await fetch(`${API_BASE}/api/analyze-resume`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

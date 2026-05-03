@@ -6,7 +6,7 @@ import pdfWorkerSrc from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerSrc;
 
-export const API_BASE = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/$/, '');
+export const API_BASE = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
 
 export const chartPalette = ['#E8470A','#F06828','#F28C5E','#F5A67A','#F8C0A0','#FADBC6','#FCE8D8','#FEF2EB'];
 

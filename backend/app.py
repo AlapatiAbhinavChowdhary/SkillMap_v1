@@ -9,12 +9,18 @@ from typing import Any
 
 import numpy as np
 import pandas as pd
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 from sentence_transformers import SentenceTransformer
 from sklearn.preprocessing import normalize as l2_normalize
+import requests
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+# Path resolution
+CURRENT_DIR = Path(__file__).resolve().parent
+# If running inside 'backend' folder (local), go up one level. 
+# If running at root (Docker), stay in current dir.
+BASE_DIR = CURRENT_DIR if (CURRENT_DIR / "models").exists() else CURRENT_DIR.parent
+
 MODEL_DIR = Path(os.getenv("MODEL_DIR", BASE_DIR / "models"))
 RESUME_CSV = BASE_DIR / "Resume.csv"
 CLUSTER_RESULTS_CSV = MODEL_DIR / "cluster_results.csv"
@@ -213,7 +219,7 @@ def pseudo_confidence(distances: np.ndarray) -> float:
     return float(np.clip(raw_score, 0.05, 0.99))
 
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='dist', static_url_path='/')
 CORS(app)
 
 if not MODEL_DIR.exists():
@@ -341,6 +347,26 @@ def predict() -> tuple[dict[str, Any], int]:
     )
 
 
+@app.post("/api/analyze-resume")
+def analyze_resume_proxy():
+    payload = request.get_json(silent=True) or {}
+    gemini_key = os.getenv("GEMINI_API_KEY")
+    if not gemini_key:
+        return {"error": "GEMINI_API_KEY not configured on server"}, 500
+
+    gemini_url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent"
+
+    try:
+        resp = requests.post(
+            f"{gemini_url}?key={gemini_key}",
+            json=payload,
+            timeout=45
+        )
+        return resp.json(), resp.status_code
+    except Exception as e:
+        return {"error": str(e)}, 500
+
+
 @app.get("/clusters")
 def clusters() -> tuple[list[dict[str, Any]], int]:
     cluster_list = [
@@ -436,7 +462,11 @@ def stats() -> tuple[dict[str, Any], int]:
     )
 
 
+@app.errorhandler(404)
+def not_found(e):
+    return send_from_directory(app.static_folder, 'index.html')
+
 if __name__ == "__main__":
-    port = int(os.getenv("FLASK_PORT", "5000"))
+    port = int(os.getenv("PORT", "7860"))
     debug = os.getenv("FLASK_DEBUG", "false").lower() == "true"
     app.run(host="0.0.0.0", port=port, debug=debug)
